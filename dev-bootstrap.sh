@@ -28,4 +28,50 @@ chmod +x /etc/profile.d/maven.sh
 rm -rf $HOME
 cp /vagrant/README ~
 
+echo "Setting up environment..."
+cat >> /home/vagrant/.bashrc <<EOF
+export JAVA_HOME=/usr/jdk64/jdk1.7.0_45
+export HADOOP_HOME=/usr/lib/hadoop
+export ZOOKEEPER_HOME=/usr/lib/zookeeper
+export PATH=$PATH:/usr/lib/accumulo/bin
+EOF
+export JAVA_HOME=/usr/jdk64/jdk1.7.0_45
+export HADOOP_HOME=/usr/lib/hadoop
+export ZOOKEEPER_HOME=/usr/lib/zookeeper
+export PATH=$PATH:/usr/lib/accumulo/bin
+
+
+# install accumulo
+curl -O -L -s http://www.carfab.com/apachesoftware/accumulo/1.6.1/accumulo-1.6.1-bin.tar.gz
+tar xvzf accumulo-1.6.1-bin.tar.gz
+mv accumulo-1.6.1 /usr/lib/accumulo
+sudo chown -R vagrant:vagrant /usr/lib/accumulo
+
+echo "Configuring Accumulo..."
+cp /usr/lib/accumulo/conf/examples/1GB/standalone/* /usr/lib/accumulo/conf/
+cat > /usr/lib/accumulo/conf/masters <<EOF
+c6401.ambari.apache.org
+EOF
+cat > /usr/lib/accumulo/conf/slaves <<EOF
+c6401.ambari.apache.org
+EOF
+sed -i 's/>secret</>dev</' /usr/lib/accumulo/conf/accumulo-site.xml
+
+
+echo "With Hadoop running, finalizing Accumulo install"
+sudo su hdfs
+hadoop fs -mkdir /accumulo
+hadoop fs -chown vagrant:vagrant /accumulo
+
+hadoop fs -mkdir /user/vagrant
+hadoop fs -chown vagrant:vagrant /user/vagrant
+exit
+
+/usr/lib/accumulo/bin/accumulo init --clear-instance-name <<EOF
+accumulo
+dev
+dev
+EOF
+
+
 echo 'Ambari Development VM has been set up! Enjoy!'

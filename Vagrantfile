@@ -19,6 +19,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", 2048] # RAM allocated to each VM
+    vb.customize ["modifyvm", :id, "--cpus", 2]
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
   end
 
   config.vm.provision :shell, :path => "bootstrap.sh"
@@ -27,16 +29,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     c6401.vm.provision :shell, :path => "start-ambari-server.sh"
     c6401.vm.hostname = "c6401.ambari.apache.org"
     c6401.vm.network :private_network, ip: "192.168.64.101"
-  end
+    c6401.vm.network "forwarded_port", guest: 50095, host: 50095
 
-  config.vm.define :c6402 do |c6402|
-    c6402.vm.hostname = "c6402.ambari.apache.org"
-    c6402.vm.network :private_network, ip: "192.168.64.102"
-  end
-
-  config.vm.define :c6403 do |c6403|
-    c6403.vm.hostname = "c6403.ambari.apache.org"
-    c6403.vm.network :private_network, ip: "192.168.64.103"
   end
 
 end
