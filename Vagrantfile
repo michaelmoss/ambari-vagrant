@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 
   config.vm.provider :virtualbox do |vb|
-    vb.customize ["modifyvm", :id, "--memory", 2048] # RAM allocated to each VM
+    vb.customize ["modifyvm", :id, "--memory", 4096] # RAM allocated to each VM
     vb.customize ["modifyvm", :id, "--cpus", 2]
     vb.customize ["modifyvm", :id, "--ioapic", "on"]
   end

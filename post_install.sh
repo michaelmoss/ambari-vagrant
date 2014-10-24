@@ -8,7 +8,7 @@ hadoop fs -chown vagrant:vagrant /user/vagrant
 exit
 
 /usr/lib/accumulo/bin/accumulo init --clear-instance-name <<EOF
-accumulo
+dev
 dev
 dev
 EOF
