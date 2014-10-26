@@ -1,3 +1,5 @@
+echo "--- RUNNING BLUEPRINT ----"
+
 AMBARI_URL=192.168.64.101:8080
 ########################
 # create the BLUEPRINT
@@ -78,4 +80,10 @@ EOF
 
 
 ## check status
-curl -s -u admin:admin -H "X-Requested-By: ambari" "http://$AMBARI_URL/api/v1/clusters/MySingleNodeCluster/requests/1?fields=tasks/Tasks/*"|jq ".tasks[].Tasks| [.id, .status,  .command_detail] " -c
+a=$(curl -s -u admin:admin -H "X-Requested-By: ambari" "http://$AMBARI_URL/api/v1/clusters/MySingleNodeCluster/requests/1?fields=tasks/Tasks/*"|jq ".tasks[].Tasks| [.id, .status,  .command_detail] " -c | grep -v COMPLETED | wc -l |awk '{print $1}')
+while [ $a -gt 0 ]
+do
+echo $a
+a=$(curl -s -u admin:admin -H "X-Requested-By: ambari" "http://$AMBARI_URL/api/v1/clusters/MySingleNodeCluster/requests/1?fields=tasks/Tasks/*"|jq ".tasks[].Tasks| [.id, .status,  .command_detail] " -c | grep -v COMPLETED |  wc -l |awk '{print $1}')
+sleep 5
+done

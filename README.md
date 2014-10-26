@@ -36,3 +36,8 @@ Since Ambari 1.5 there is a new way to declaratively specify your cluseter, call
 vagrant ssh
 ./post_install.sh
 ```
+
+# When things go wrong
+AMBARI_URL=192.168.64.101:8080
+curl -H "X-Requested-By: ambari" -X DELETE -u admin:admin http://$AMBARI_URL/api/v1/blueprints/single-node-hdfs-yarn
+curl -H "X-Requested-By: ambari" -X DELETE -u admin:admin http://$AMBARI_URL/api/v1/clusters/MySingleNodeCluster
